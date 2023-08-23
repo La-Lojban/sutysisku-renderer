@@ -1,22 +1,3 @@
-type IfEquals<X, Y, A = X, B = never> = (<T>() => T extends X ? 1 : 2) extends <T>() => T extends Y ? 1 : 2 ? A : B;
-
-type WritableKeys<T> = {
-  [P in keyof T]-?: IfEquals<{ [Q in P]: T[P] }, { -readonly [Q in P]: T[P] }, P>;
-}[keyof T];
-
-export type HScriptKeys =
-  | 'id'
-  | 'class'
-  | 'className'
-  | 'addClass'
-  | 'removeClass'
-  | 'attributes'
-  | 'style'
-  | 'appendChildren'
-  | 'children';
-
-export type WritableNodeKeys = Pick<HTMLElement, WritableKeys<Node>>;
-
 export interface VDOMElement extends HTMLElement {
   actualize?: (arg0: Document) => HTMLElement;
 }
@@ -38,3 +19,40 @@ export interface PatchDOMOptions {
 export type SpecialAttrs = 'selected' | 'checked' | 'disabled';
 
 export type SpecialWidgets = 'OPTION' | 'SELECT' | 'TEXTAREA' | 'INPUT';
+
+export type StoreOptions = {
+  localCacheKey?: string;
+  eventKey: string;
+};
+
+export type ComponentOptions = {
+  eventKeys: string[];
+  afterRender?: () => void;
+};
+
+export type Primitive = string | number | boolean;
+export type RecursiveObject = {
+  [key: string | symbol]: Primitive | Array<RecursiveObject> | RecursiveObject | undefined;
+};
+
+// type ValueOf<T> = T[keyof T];
+// type AllKeys<T> = T extends any ? keyof T : never;
+
+// type HTMLElementUnion = HTMLElement | HTMLInputElement; // ValueOf<HTMLElementTagNameMap>;
+
+// type ElAttrKey = 'attributes' | 'events' | 'style' | 'class' | 'className' | 'innerHTML' | 'textContent' | AllKeys<HTMLElementUnion>;
+
+export type ElAttr = Record<string, unknown>;
+
+export type ElChild = string | number | Node;
+
+export type ElArg = ElChild | Partial<ElAttr> | null | undefined | false;
+
+type HtmlKey = keyof HTMLElementTagNameMap;
+
+export type H = {
+  <K extends HtmlKey>(tagName: K, ...args: ElArg[]): HTMLElementTagNameMap[K];
+  (tagName: string, ...args: ElArg[]): HTMLElement;
+};
+
+export type RenderTemplate = () => Element | Promise<Element>;

@@ -51,7 +51,7 @@ function render(primer, json) {
                     for (var _g = 0, _h = Object.keys(value); _g < _h.length; _g++) {
                         var attr = _h[_g];
                         if (value[attr] !== null)
-                            targetHTML.style.setProperty(attr, value[attr]);
+                            targetHTML.style[attr] = value[attr];
                     }
                     break;
                 case 'appendChildren':

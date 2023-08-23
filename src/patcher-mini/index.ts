@@ -1,7 +1,8 @@
 import morph from './morph';
 import { TEXT_NODE } from '../common/constants';
+import { getElement } from '../common/functions';
 // Morph one tree into another tree
-//
+
 // no parent
 //   -> same: diff and walk children
 //   -> not same: replace and return
@@ -13,7 +14,14 @@ import { TEXT_NODE } from '../common/constants';
 //   -> diff nodes and apply patch to old node
 // nodes are the same
 //   -> walk all child nodes and append to old node
-export default function patchDOM(oldTree: HTMLElement, newTree: HTMLElement, options = { childrenOnly: false }) {
+export default function patchDOM(
+  oldTree: Element | string | null | undefined,
+  newTree: Element,
+  options = { childrenOnly: false },
+) {
+  oldTree = getElement(oldTree);
+  if (!oldTree) return;
+  newTree.id = oldTree.id;
   if (options && options.childrenOnly) {
     updateChildren(newTree, oldTree);
     return oldTree;
@@ -23,7 +31,7 @@ export default function patchDOM(oldTree: HTMLElement, newTree: HTMLElement, opt
 }
 
 // Walk and morph a dom tree
-function walk(newNode: HTMLElement, oldNode: HTMLElement) {
+function walk(newNode: Element, oldNode: Element) {
   if (!oldNode) {
     return newNode;
   } else if (!newNode) {
@@ -41,15 +49,15 @@ function walk(newNode: HTMLElement, oldNode: HTMLElement) {
 
 // Update the children of elements
 // (obj, obj) -> null
-function updateChildren(newNode: HTMLElement, oldNode: HTMLElement) {
+function updateChildren(newNode: Element, oldNode: Element) {
   let oldChild, newChild, morphed, oldMatch;
 
   // The offset is only ever increased, and used for [i - offset] in the loop
   let offset = 0;
 
   for (let i = 0; ; i++) {
-    oldChild = oldNode.childNodes[i] as HTMLElement;
-    newChild = newNode.childNodes[i - offset] as HTMLElement;
+    oldChild = oldNode.childNodes[i] as Element;
+    newChild = newNode.childNodes[i - offset] as Element;
     if (!oldChild && !newChild) {
       break;
 
@@ -85,7 +93,7 @@ function updateChildren(newNode: HTMLElement, oldNode: HTMLElement) {
 
       // If there was a node with the same ID or placeholder in the old list
       if (oldMatch) {
-        morphed = walk(newChild, oldMatch as HTMLElement);
+        morphed = walk(newChild, oldMatch as Element);
         if (morphed !== oldMatch) offset++;
         if (morphed) oldNode.insertBefore(morphed, oldChild);
 
@@ -106,7 +114,7 @@ function updateChildren(newNode: HTMLElement, oldNode: HTMLElement) {
   }
 }
 
-function same(a: HTMLElement, b: HTMLElement) {
+function same(a: Element, b: Element) {
   if (a.id) return a.id === b.id;
   if (a.isSameNode) return a.isSameNode(b);
   if (a.tagName !== b.tagName) return false;

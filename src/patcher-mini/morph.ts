@@ -4,7 +4,7 @@ const ELEMENT_NODE = 1;
 const TEXT_NODE = 3;
 const COMMENT_NODE = 8;
 
-export default function morph(newNode: HTMLElement, oldNode: HTMLElement): void {
+export default function morph(newNode: Element, oldNode: Element): void {
   const nodeType = newNode.nodeType;
   const nodeName = newNode.nodeName;
 
@@ -22,7 +22,7 @@ export default function morph(newNode: HTMLElement, oldNode: HTMLElement): void 
   copyEvents(newNode, oldNode);
 }
 
-function copyAttrs(newNode: HTMLElement, oldNode: HTMLElement) {
+function copyAttrs(newNode: Element, oldNode: Element) {
   const oldAttrs = oldNode.attributes;
   const newAttrs = newNode.attributes;
 
@@ -74,7 +74,7 @@ function copyAttrs(newNode: HTMLElement, oldNode: HTMLElement) {
   }
 }
 
-function copyEvents(newNode: HTMLElement, oldNode: HTMLElement) {
+function copyEvents(newNode: Element, oldNode: Element) {
   for (const ev of events) {
     if ((newNode as any)[ev]) {
       // if new element has a whitelisted attribute
@@ -145,7 +145,7 @@ function updateTextarea(newNode: HTMLTextAreaElement, oldNode: HTMLTextAreaEleme
   }
 }
 
-function updateAttribute(newNode: HTMLElement, oldNode: HTMLElement, name: string) {
+function updateAttribute(newNode: Element, oldNode: Element, name: string) {
   if ((newNode as any)[name] !== (oldNode as any)[name]) {
     (oldNode as any)[name] = (newNode as any)[name];
     if ((newNode as any)[name]) {

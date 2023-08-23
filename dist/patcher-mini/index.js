@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var morph_1 = require("./morph");
-var TEXT_NODE = 3;
+var constants_1 = require("../common/constants");
 // Morph one tree into another tree
 //
 // no parent
@@ -117,7 +117,7 @@ function same(a, b) {
         return a.isSameNode(b);
     if (a.tagName !== b.tagName)
         return false;
-    if (a.nodeType === TEXT_NODE)
+    if (a.nodeType === constants_1.TEXT_NODE)
         return a.nodeValue === b.nodeValue;
     return false;
 }
