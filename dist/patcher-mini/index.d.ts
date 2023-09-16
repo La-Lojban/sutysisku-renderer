@@ -1,3 +1,3 @@
-export default function patchDOM(oldTree: HTMLElement, newTree: HTMLElement, options?: {
+export default function patchDOM(oldTree: Element | string | null | undefined, newTree: Element, options?: {
     childrenOnly: boolean;
-}): HTMLElement | null;
+}): Element | null | undefined;

@@ -23,11 +23,20 @@ export type SpecialWidgets = 'OPTION' | 'SELECT' | 'TEXTAREA' | 'INPUT';
 export type StoreOptions = {
   localCacheKey?: string;
   eventKey: string;
+  path?: string[];
+};
+
+export type ChangedProperty = {
+  eventKey: string;
+  target: RecursiveObject;
+  property: string;
+  value?: any;
+  path: StoreOptions['path'];
 };
 
 export type ComponentOptions = {
   eventKeys: string[];
-  afterRender?: () => void;
+  afterRender: (t: { eventKey: string; previousState: RecursiveObject; newStateAmendments: RecursiveObject }) => void;
 };
 
 export type Primitive = string | number | boolean;
@@ -46,13 +55,21 @@ export type ElAttr = Record<string, unknown>;
 
 export type ElChild = string | number | Node;
 
-export type ElArg = ElChild | Partial<ElAttr> | null | undefined | false;
+export type ElArg = ElChild | Partial<ElAttr> | null | undefined | false | SvgArg;
 
 type HtmlKey = keyof HTMLElementTagNameMap;
 
 export type H = {
   <K extends HtmlKey>(tagName: K, ...args: ElArg[]): HTMLElementTagNameMap[K];
   (tagName: string, ...args: ElArg[]): HTMLElement;
+};
+
+type SvgKey = keyof SVGElementTagNameMap;
+export type SvgAttr = Record<string, unknown>;
+export type SvgArg = SvgAttr | Node;
+
+export type S = {
+  <K extends SvgKey>(tagName: K, ...args: SvgArg[]): SVGElementTagNameMap[K];
 };
 
 export type RenderTemplate = () => Element | Promise<Element>;

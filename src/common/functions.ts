@@ -1,9 +1,29 @@
-function dispatchCustomEvent(eventKey: string) {
+import { StoreOptions } from './types';
+
+function dispatchCustomEvent<T>({
+  eventKey,
+  target,
+  property,
+  value,
+  path,
+}: {
+  eventKey: string;
+  target: T;
+  property: keyof T;
+  value?: any;
+  path: StoreOptions['path'];
+}) {
   const event = new CustomEvent(eventKey, {
     bubbles: true,
     cancelable: true,
+    detail: {
+      eventKey,
+      target: structuredClone(target),
+      property,
+      value,
+      path: path ?? [],
+    },
   });
-
   document.dispatchEvent(event);
 }
 

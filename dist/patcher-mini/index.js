@@ -2,8 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 var morph_1 = require("./morph");
 var constants_1 = require("../common/constants");
+var functions_1 = require("../common/functions");
 // Morph one tree into another tree
-//
 // no parent
 //   -> same: diff and walk children
 //   -> not same: replace and return
@@ -17,6 +17,10 @@ var constants_1 = require("../common/constants");
 //   -> walk all child nodes and append to old node
 function patchDOM(oldTree, newTree, options) {
     if (options === void 0) { options = { childrenOnly: false }; }
+    oldTree = (0, functions_1.getElement)(oldTree);
+    if (!oldTree)
+        return;
+    newTree.id = oldTree.id;
     if (options && options.childrenOnly) {
         updateChildren(newTree, oldTree);
         return oldTree;

@@ -1,10 +1,14 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.patchDOM = exports.patchDOMClassic = exports.render = exports.amend = void 0;
+exports.component = exports.store = exports.patchDOM = exports.patchDOMClassic = exports.s = exports.h = void 0;
 var html_builder_1 = require("./html-builder");
-Object.defineProperty(exports, "amend", { enumerable: true, get: function () { return html_builder_1.amend; } });
-Object.defineProperty(exports, "render", { enumerable: true, get: function () { return html_builder_1.render; } });
+Object.defineProperty(exports, "h", { enumerable: true, get: function () { return html_builder_1.h; } });
+Object.defineProperty(exports, "s", { enumerable: true, get: function () { return html_builder_1.s; } });
 var patcher_classic_1 = require("./patcher-classic");
 Object.defineProperty(exports, "patchDOMClassic", { enumerable: true, get: function () { return patcher_classic_1.default; } });
 var patcher_mini_1 = require("./patcher-mini");
 Object.defineProperty(exports, "patchDOM", { enumerable: true, get: function () { return patcher_mini_1.default; } });
+var state_1 = require("./state");
+Object.defineProperty(exports, "store", { enumerable: true, get: function () { return state_1.store; } });
+var reactive_render_1 = require("./reactive-render");
+Object.defineProperty(exports, "component", { enumerable: true, get: function () { return reactive_render_1.component; } });

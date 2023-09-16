@@ -5,7 +5,17 @@ import { DEFAULT_STORE_OPTIONS } from '../common/constants';
 const proxyCache = new WeakMap();
 function createDeepOnChangeProxy<T extends RecursiveObject>(
   target: T,
-  onChange: (target: T) => void,
+  onChange: ({
+    target,
+    property,
+    value,
+    path,
+  }: {
+    target: T;
+    property: keyof T;
+    value?: any;
+    path: StoreOptions['path'];
+  }) => void,
   options: StoreOptions,
 ): T {
   return new Proxy(target, {
@@ -22,7 +32,10 @@ function createDeepOnChangeProxy<T extends RecursiveObject>(
       // }
       if (item && typeof item === 'object') {
         if (proxyCache.has(item)) return proxyCache.get(item);
-        const proxy = createDeepOnChangeProxy<any>(item, onChange, options);
+        const proxy = createDeepOnChangeProxy<any>(item, onChange, {
+          ...options,
+          path: (options.path ?? []).concat([property.toString()]),
+        });
         proxyCache.set(item, proxy);
         return proxy;
       }
@@ -33,14 +46,14 @@ function createDeepOnChangeProxy<T extends RecursiveObject>(
         return true;
       }
       if (target[property] !== value) {
-        onChange(target);
+        onChange({ target, property, value, path: options.path });
       }
       target[property] = value;
       return true;
     },
     deleteProperty(target: T, property: keyof T): boolean {
       delete target[property];
-      onChange(target);
+      onChange({ target, property, path: options.path });
       return true;
     },
   });
@@ -50,9 +63,11 @@ function store<T extends RecursiveObject>(data: T, options: StoreOptions = DEFAU
   if (options.localCacheKey) data = { ...data, ...JSON.parse(localStorage.getItem(options.localCacheKey) ?? '{}') };
   return createDeepOnChangeProxy<T>(
     data,
-    (target: T) => {
-      dispatchCustomEvent(options.eventKey);
-      if (options.localCacheKey) localStorage.setItem(options.localCacheKey, JSON.stringify(target));
+    ({ target, property, value, path }: { target: T; property: keyof T; value?: any; path: StoreOptions['path'] }) => {
+      dispatchCustomEvent({ eventKey: options.eventKey, target, property, value, path });
+      if (options.localCacheKey && (path ?? []).length === 0) {
+        localStorage.setItem(options.localCacheKey, JSON.stringify({ ...target, [property]: value }));
+      }
     },
     options,
   );

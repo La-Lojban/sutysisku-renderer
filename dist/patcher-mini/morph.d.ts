@@ -1,1 +1,1 @@
-export default function morph(newNode: HTMLElement, oldNode: HTMLElement): void;
+export default function morph(newNode: Element, oldNode: Element): void;
